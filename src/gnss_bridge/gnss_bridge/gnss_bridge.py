@@ -4,10 +4,10 @@ import os
 import asyncio
 import json
 import websockets
+import threading
 
-from sensor_msgs.msg import NavSatFix  # GNSS の標準メッセージ
+from sensor_msgs.msg import NavSatFix
 
-# WebSocket送信先
 WS_SERVER_URL = os.environ.get('WS_SERVER_URL', 'ws://localhost:3000')
 
 
@@ -21,9 +21,28 @@ class GNSSBridge(Node):
             10
         )
 
-        # asyncio イベントループを取得
-        self.loop = asyncio.get_event_loop()
+        self.queue = asyncio.Queue()
+        self.loop = asyncio.new_event_loop()
+
+        threading.Thread(target=self.loop_runner, daemon=True).start()
+
+    def loop_runner(self):
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_until_complete(self.ws_loop())
+
+    async def ws_loop(self):
         self.websocket = None
+        while True:
+            data = await self.queue.get()
+            try:
+                if not self.websocket or self.websocket.closed:
+                    self.get_logger().info("WebSocket接続試行中...")
+                    self.websocket = await websockets.connect(WS_SERVER_URL)
+
+                await self.websocket.send(json.dumps(data))
+                self.get_logger().info(f"送信: {data}")
+            except Exception as e:
+                self.get_logger().warn(f"WebSocket送信失敗: {e}")
 
     def listener_callback(self, msg):
         gps_data = {
@@ -33,21 +52,7 @@ class GNSSBridge(Node):
         }
 
         self.get_logger().info(f"受信: {gps_data}")
-
-        # タスクをイベントループに登録
-        self.loop.create_task(self.send_ws(gps_data))
-
-    async def send_ws(self, data):
-        try:
-            if not self.websocket or self.websocket.closed:
-                self.get_logger().info("WebSocket接続試行中...")
-                self.websocket = await websockets.connect(WS_SERVER_URL)
-
-            await self.websocket.send(json.dumps(data))
-            self.get_logger().info(f"送信: {data}")
-
-        except Exception as e:
-            self.get_logger().warn(f"WebSocket送信失敗: {e}")
+        self.loop.call_soon_threadsafe(self.queue.put_nowait, gps_data)  # ✅ 非同期で投入
 
 
 def main(args=None):

@@ -11,7 +11,9 @@ RUN apt-get update && apt-get install -y \
     python3-rosdep \
     && rm -rf /var/lib/apt/lists/*
 
-RUN rosdep init && rosdep update
+RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && \
+    rosdep init && \
+    rosdep update
 
 WORKDIR /root/ros2_ws
 COPY ./src ./src
@@ -27,4 +29,4 @@ ENV WS_SERVER_URL=ws://localhost:3000
 
 CMD bash -c "source /opt/ros/humble/setup.bash && \
             source /root/ros2_ws/install/setup.bash && \
-            ros2 run gnss_bridge gnss_bridge"
+            python3 -m gnss_bridge.gnss_bridge"
