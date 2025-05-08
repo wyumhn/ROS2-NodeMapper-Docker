@@ -1,0 +1,16 @@
+<package format="3">
+  <name>gnss_bridge</name>
+  <version>0.0.1</version>
+  <description>Bridge GNSS from ROS2 to WebSocket</description>
+  <maintainer email="you@example.com">You</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>websockets</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
