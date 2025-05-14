@@ -31,16 +31,13 @@ class GNSSBridge(Node):
         self.loop.run_until_complete(self.ws_loop())
 
     async def ws_loop(self):
-        self.websocket = None
         while True:
             data = await self.queue.get()
             try:
-                if not self.websocket or self.websocket.closed:
-                    self.get_logger().info("WebSocket接続試行中...")
-                    self.websocket = await websockets.connect(WS_SERVER_URL)
-
-                await self.websocket.send(json.dumps(data))
-                self.get_logger().info(f"送信: {data}")
+                self.get_logger().info("WebSocket接続試行中...")
+                async with websockets.connect(WS_SERVER_URL) as websocket:
+                    await websocket.send(json.dumps(data))
+                    self.get_logger().info(f"送信: {data}")
             except Exception as e:
                 self.get_logger().warn(f"WebSocket送信失敗: {e}")
 
@@ -52,7 +49,7 @@ class GNSSBridge(Node):
         }
 
         self.get_logger().info(f"受信: {gps_data}")
-        self.loop.call_soon_threadsafe(self.queue.put_nowait, gps_data)  # ✅ 非同期で投入
+        self.loop.call_soon_threadsafe(self.queue.put_nowait, gps_data)
 
 
 def main(args=None):
