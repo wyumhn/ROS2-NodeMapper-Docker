@@ -2,3 +2,5 @@
 build/
 install/
 .git/
+node_modules
+web
