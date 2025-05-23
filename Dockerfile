@@ -33,11 +33,13 @@ RUN git clone https://github.com/wyumhn/Auto_Cosmos_mapper .
 RUN cd server && npm install
 RUN cd client && npm install && npm run build || true
 
+RUN npm install -g pm2
+
 # 起動スクリプト
 COPY docker-entrypoint.sh /root/docker-entrypoint.sh
 RUN chmod +x /root/docker-entrypoint.sh
 
 ENV ROS_DOMAIN_ID=0
-ENV WS_SERVER_URL=ws://localhost:3000
+ENV WS_SERVER_URL=ws://localhost:3001
 
 CMD ["/root/docker-entrypoint.sh"]
