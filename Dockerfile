@@ -12,8 +12,13 @@ RUN apt-get update && apt-get install -y \
     python3-colcon-common-extensions \
     python3-websockets \
     python3-rosdep \
-    # nodejs と npm はここから削除します
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | tee /etc/apt/sources.list.d/zenoh.list \
+    \
+    && apt-get update \
+    && apt-get install -y zenoh-bridge-ros2dds \
+    \
+    && rm -rf /var/lib/apt/lists/* # apt-getのキャッシュを削除
 
 # Node.jsとnpmの最新LTSバージョンをインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \

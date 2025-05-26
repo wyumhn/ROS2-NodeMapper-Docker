@@ -2,22 +2,27 @@ module.exports = {
     apps : [{
         name: "websocket-server",
         script: "./server.js",
-        cwd: "/root/web", // カレントディレクトリを明示的に指定
+        cwd: "/root/web",
         time: true,
-        autorestart: false, // デバッグのため自動再起動はオフ
-        // merge_logs: true, // pm2-runtime が自動でマージするため不要な場合が多い
+        autorestart: false,
         env: {
-        NODE_ENV: "production", // 必要であれば環境変数を設定
+        NODE_ENV: "production",
     }
     }, {
         name: "gnss-bridge",
-        script: "python3", // インタプリタとしてPythonを指定
-        args: "-m gnss_bridge.gnss_bridge", // Pythonモジュールを実行するための引数
-        cwd: "/root/ros2_ws", // カレントディレクトリを明示的に指定
-        interpreter: "bash", // ROS2環境設定のためにbashを介して実行
-        interpreter_args: "-c 'source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && exec python3 -m gnss_bridge.gnss_bridge'", // 環境設定とスクリプト実行
+        script: "python3",
+        args: "-m gnss_bridge.gnss_bridge",
+        cwd: "/root/ros2_ws",
+        interpreter: "bash",
+        interpreter_args: "-c 'source /opt/ros/humble/setup.bash && source /root/ros2_ws/install/setup.bash && exec python3 -m gnss_bridge.gnss_bridge'",
         time: true,
-        autorestart: false, // デバッグのため自動再起動はオフ
-        // merge_logs: true,
+        autorestart: false,
+    }, {
+        name: "zenoh-bridge-ros2dds",
+        script: "bash",
+        args: "-c 'source /opt/ros/humble/setup.bash && exec zenoh-bridge-ros2dds'",
+        cwd: "/root/",
+        time: true,
+        autorestart: false,
     }]
 };
