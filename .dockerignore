@@ -4,3 +4,4 @@ install/
 .git/
 node_modules
 web
+.env.server

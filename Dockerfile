@@ -30,6 +30,7 @@ RUN source /opt/ros/humble/setup.bash && \
 
 WORKDIR /root/web
 RUN git clone https://github.com/wyumhn/Auto_Cosmos_mapper .
+COPY .env.server ./server/.env
 RUN cd server && npm install
 RUN cd client && npm install && npm run build || true
 
