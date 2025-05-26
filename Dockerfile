@@ -24,6 +24,8 @@ RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep init && \
     rosdep update
 
+COPY ecosystem.config.js /root/ecosystem.config.js
+
 WORKDIR /root/ros2_ws
 COPY ./src ./src
 
