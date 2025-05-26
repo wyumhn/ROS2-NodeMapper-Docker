@@ -4,6 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 SHELL ["/bin/bash", "-c"]
 
+# ROS Humbleのベースイメージに含まれるapt-get updateは一度だけ実行
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -11,8 +12,12 @@ RUN apt-get update && apt-get install -y \
     python3-colcon-common-extensions \
     python3-websockets \
     python3-rosdep \
-    nodejs \
-    npm \
+    # nodejs と npm はここから削除します
+    && rm -rf /var/lib/apt/lists/*
+
+# Node.jsとnpmの最新LTSバージョンをインストール
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && \
