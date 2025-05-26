@@ -15,4 +15,4 @@ pm2 start "python3 -m gnss_bridge.gnss_bridge" --name gnss-bridge
 
 # PM2をフォアグラウンドで実行し、コンテナのメインプロセスとする
 # これにより、上記で登録したプロセスが管理され、コンテナが終了するまでPM2が動作し続ける
-pm2-runtime --json
+exec pm2-runtime --json
