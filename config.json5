@@ -1,14 +1,9 @@
 {
   "plugins": {
     "ros2dds": {
-      "rules": [
-        {
-          "selector": "/gps/fix",
-          "permission": true
-        }, {
-          "selector": "/propeller_pwm",
-          "permission": true
-        }
+      "allow": [
+        "/gps/fix",
+        "/propeller_pwm"
       ]
     }
   }
