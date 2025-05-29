@@ -5,7 +5,7 @@
         {
           "selector": "/gps/fix",
           "permission": true
-        } {
+        }, {
           "selector": "/propeller_pwm",
           "permission": true
         }
