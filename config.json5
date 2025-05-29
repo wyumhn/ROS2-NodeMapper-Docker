@@ -1,0 +1,13 @@
+{
+  "plugins": {
+    "ros2dds": {
+      "default_permission": "deny",
+      "rules": [
+        {
+          "selector": "/gps/fix",
+          "permission": "allow"
+        }
+      ]
+    }
+  }
+}
