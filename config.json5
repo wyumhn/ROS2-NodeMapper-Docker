@@ -4,10 +4,10 @@
       "rules": [
         {
           "selector": "/gps/fix",
-          "permission": "allow"
+          "permission": true
         } {
           "selector": "/propeller_pwm",
-          "permission": "allow"
+          "permission": true
         }
       ]
     }
