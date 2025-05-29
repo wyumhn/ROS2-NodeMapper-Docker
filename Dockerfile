@@ -30,7 +30,7 @@ RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && \
     rosdep update
 
 COPY ecosystem.config.js /root/ecosystem.config.js
-COPY config.json5 /root/config.json.5
+COPY config.json5 /root/config.json5
 
 WORKDIR /root/ros2_ws
 COPY ./src ./src
