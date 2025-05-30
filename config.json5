@@ -1,10 +1,10 @@
 {
-  "plugins": {
-    "ros2dds": {
-      "allow": [
-        "/gps/fix",
-        "/propeller_pwm"
-      ]
+  plugins: {
+    ros2dds: {
+      allow: {
+        publishers: ["/gps/fix", "/propeller_pwm"],
+        subscribers: ["/gps/fix", "/propeller_pwm"],
+      }
     }
   }
 }
