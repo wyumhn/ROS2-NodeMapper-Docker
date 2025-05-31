@@ -20,7 +20,7 @@ module.exports = {
     }, {
         name: "zenoh-bridge-ros2dds",
         script: "bash",
-        args: "-c 'source /opt/ros/humble/setup.bash && exec zenoh-bridge-ros2dds --config /root/config.json5'",
+        args: "-c 'source /opt/ros/humble/setup.bash && exec zenoh-bridge-ros2dds'",
         cwd: "/root/",
         time: true,
         autorestart: false,

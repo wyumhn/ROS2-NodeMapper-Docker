@@ -8,6 +8,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update && apt-get install -y \
     curl \
     git \
+    nano \
     python3-pip \
     python3-colcon-common-extensions \
     python3-websockets \
