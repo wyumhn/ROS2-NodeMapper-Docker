@@ -1,10 +1,7 @@
 {
   plugins: {
     ros2dds: {
-      allow: {
-        publishers: ["/gps/fix", "/propeller_pwm"],
-        subscribers: ["/gps/fix", "/propeller_pwm"],
-      }
+      reliable_routes_blocking: false,
     }
   }
 }
