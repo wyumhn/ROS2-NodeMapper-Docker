@@ -2,6 +2,21 @@
   plugins: {
     ros2dds: {
       reliable_routes_blocking: false,
+      pub_max_frequencies: [
+        "/filr_camera/camera_info=1",
+        "/filr_camera/image_color=1",
+        "/filr_camera/image_mono=1",
+        "/filr_camera/image_raw=1",
+        "/filr_camera/image_rect=1",
+        "/gps/fix=10",
+        "/image_raw=1",
+        "/imu/.*=10",
+        "/scan=1",
+        "/temperature=1",
+        "/thermal_image=1",
+        "/velodyne_packets=1",
+        "/velodyne_points=1"
+      ]
     }
   }
 }
