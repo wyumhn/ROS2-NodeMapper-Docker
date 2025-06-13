@@ -4,15 +4,13 @@
             "name": "/gps/fix",
             "type": "sensor_msgs.msg.NavSatFix",
             "handler_module": "gps_fix_handler",
-            "handler_class": "GpsFixHandler",
-            "id": "A"
+            "handler_class": "GpsFixHandler"
         },
         {
             "name": "/imu/data",
             "type": "sensor_msgs.msg.Imu",
             "handler_module": "imu_handler",
-            "handler_class": "ImuHandler",
-            "id": "B"
+            "handler_class": "ImuHandler"
         }
     ]
 }
