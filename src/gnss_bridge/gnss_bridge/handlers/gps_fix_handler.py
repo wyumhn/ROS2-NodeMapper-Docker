@@ -10,7 +10,6 @@ class GpsFixHandler(DataHandler):
         NavSatFixメッセージから緯度と経度を抽出し、指定された形式の辞書を返す
         """
         return {
-            "id": self.id,
             "lat": msg.latitude,
             "lon": msg.longitude
         }

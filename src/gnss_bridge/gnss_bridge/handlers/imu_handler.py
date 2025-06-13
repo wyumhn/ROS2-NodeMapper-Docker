@@ -10,7 +10,6 @@ class ImuHandler(DataHandler):
         Imuメッセージから角速度と線形加速度を抽出し、指定された形式の辞書を返す。
         """
         return {
-            "id": self.id,
             "angular_velocity": {
                 "x": msg.angular_velocity.x,
                 "y": msg.angular_velocity.y,

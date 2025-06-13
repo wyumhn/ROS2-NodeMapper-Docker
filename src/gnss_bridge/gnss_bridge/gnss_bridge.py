@@ -63,7 +63,7 @@ class GNSSBridge(Node):
                 )
 
                 # ハンドラインスタンスを作成
-                handler_instance = handler_class(topic_config['id'])
+                handler_instance = handler_class()
 
                 self.create_subscription(
                     msg_type,
@@ -90,10 +90,13 @@ class GNSSBridge(Node):
 
     def generic_callback(self, msg, handler, topic_name: str):
         """すべてのサブスクリプションで共有される汎用コールバック"""
-        processed_data = handler.process(msg)
-        if processed_data:
-            self.get_logger().debug(f"受信 ({topic_name}): {processed_data}")
-            self.loop.call_soon_threadsafe(self.queue.put_nowait, processed_data)
+        payload = handler.process(msg)
+        if payload:
+            # ここで topic 属性を追加
+            payload['topic'] = topic_name
+
+            self.get_logger().debug(f"受信 ({topic_name}): {payload}")
+            self.loop.call_soon_threadsafe(self.queue.put_nowait, payload)
 
     # *--------------------------------------------------------
     #   WebSocket接続・データ送信
