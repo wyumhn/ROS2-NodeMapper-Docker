@@ -44,7 +44,7 @@ class GNSSBridge(Node):
 
     def create_subscriptions_from_config(self):
 
-        package_share_directory = get_package_share_directory('ros_ws_bridge_package')
+        package_share_directory = get_package_share_directory('gnss_bridge')
         config_path = os.path.join(package_share_directory, 'config', 'topics.json')
 
         try:
