@@ -11,6 +11,12 @@
             "type": "sensor_msgs.msg.Imu",
             "handler_module": "imu_handler",
             "handler_class": "ImuHandler"
+        },
+        {
+            "name": "/chatter",
+            "type": "std_msgs.msg.String",
+            "handler_module": "chatter_handler",
+            "handler_class": "ChatterHandler"
         }
     ]
 }
