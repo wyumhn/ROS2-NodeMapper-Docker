@@ -113,20 +113,18 @@ class GNSSBridge(Node):
         while True:
             data = await self.queue.get()
             try:
-                self.get_logger().info("WebSocket接続試行中...")
+
                 async with websockets.connect(self.ws_server_url) as websocket:
-                    self.get_logger().info(f"WebSocketサーバーに接続しました")
-                    while websocket.open and rclpy.ok():
-                        data = await self.queue.get()
-                        await websocket.send(json.dumps(data))
-                        self.get_logger().info(f"送信: {data}")
-                        self.queue.task_done()
-            except (websockets.exceptions.ConnectionClosed, ConnectionRefusedError) as e:
-                self.get_logger().warn(f"WebSocket接続エラー: {e}。5秒後に再試行します。")
-                await asyncio.sleep(5)
+                    await websocket.send(json.dumps(data))
+                    self.get_logger().info(f"送信成功: {data}")
+
+            except (websockets.exceptions.ConnectionClosed, ConnectionRefusedError, OSError) as e:
+                self.get_logger().warn(f"WebSocket接続または送信に失敗しました: {e}。次のメッセージで再試行します")
             except Exception as e:
-                self.get_logger().error(f"WebSocketループで予期せぬエラー: {e}")
-                await asyncio.sleep(5)
+                self.get_logger().error(f"WebSocket処理中に予期せぬエラーが発生しました: {e}")
+
+            # キューのタスクが完了したことを通知
+            self.queue.task_done()
 
     def destroy_node(self):
         """ノードのクリーンアップ"""
