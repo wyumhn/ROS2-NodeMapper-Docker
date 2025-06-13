@@ -84,7 +84,7 @@ class GNSSBridge(Node):
 
     def _import_handler(self, module_name: str, class_name: str):
         """ ハンドラモジュールとクラス名からクラスをインポートする """
-        full_module_name = f'ros_ws_bridge_package.handlers.{module_name}'
+        full_module_name = f'gnss_bridge.handlers.{module_name}'
         module = importlib.import_module(full_module_name)
         return getattr(module, class_name)
 

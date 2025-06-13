@@ -1,4 +1,4 @@
-from ros_ws_bridge_package.data_handler import DataHandler
+from gnss_bridge.data_handler import DataHandler
 from sensor_msgs.msg import Imu
 
 class ImuHandler(DataHandler):
