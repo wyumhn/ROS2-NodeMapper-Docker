@@ -8,6 +8,7 @@ import threading
 import importlib
 import functools
 from ament_index_python.packages import get_package_share_directory
+from gnss_bridge.handlers.default_handler import DefaultHandler
 
 from sensor_msgs.msg import NavSatFix
 
@@ -55,16 +56,26 @@ class GNSSBridge(Node):
             return
 
         for topic_config in config_data.get('topics', []):
+            handler_class = None
             try:
-                # メッセージ型とハンドラクラスをにインポート
-                msg_type = self._import_type(topic_config['type'])
-                handler_class = self._import_handler(
-                    topic_config['handler_module'], topic_config['handler_class']
-                )
+                # ★★★ ここからが変更点 ★★★
+                # 1. まず、特定のハンドラを探しにいく
+                handler_module_str = topic_config['handler_module']
+                handler_class_str = topic_config['handler_class']
+                handler_class = self._import_handler(handler_module_str, handler_class_str)
+                self.get_logger().info(f"トピック '{topic_config['name']}' にハンドラ '{handler_class_str}' を使用します。")
 
-                # ハンドラインスタンスを作成
+            except (KeyError, ImportError, AttributeError):
+                # 2. ハンドラの指定がない、または見つからない場合はDefaultHandlerを使用
+                handler_class = DefaultHandler
+                self.get_logger().warn(f"ハンドラが見つからないため、トピック '{topic_config['name']}' にはDefaultHandlerを使用します。")
+
+            try:
+                # 3. 取得できたハンドラクラスでインスタンスを作成
                 handler_instance = handler_class()
+                msg_type = self._import_type(topic_config['type'])
 
+                # 4. サブスクリプションを作成 (ここは以前と同じ)
                 self.create_subscription(
                     msg_type,
                     topic_config['name'],
@@ -74,7 +85,7 @@ class GNSSBridge(Node):
                 self.get_logger().info(f"トピック '{topic_config['name']}' のサブスクリプションを作成しました。")
 
             except (KeyError, ImportError, AttributeError) as e:
-                self.get_logger().error(f"設定エントリ {topic_config} の処理中にエラー: {e}")
+                self.get_logger().error(f"トピック設定 '{topic_config}' の処理中にエラー: {e}")
 
     def _import_type(self, type_str: str):
         """ 'pkg.module.Class' 形式の文字列から型をインポートする """
