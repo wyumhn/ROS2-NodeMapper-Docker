@@ -1,0 +1,22 @@
+{
+    "topics": [
+        {
+            "name": "/gps/fix",
+            "type": "sensor_msgs.msg.NavSatFix",
+            "handler_module": "gps_fix_handler",
+            "handler_class": "GpsFixHandler"
+        },
+        {
+            "name": "/imu/data",
+            "type": "sensor_msgs.msg.Imu",
+            "handler_module": "imu_handler",
+            "handler_class": "ImuHandler"
+        },
+        {
+            "name": "/chatter",
+            "type": "std_msgs.msg.String",
+            "handler_module": "chatter_handler",
+            "handler_class": "ChatterHandler"
+        }
+    ]
+}
