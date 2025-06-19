@@ -80,7 +80,7 @@ class GNSSBridge(Node):
             self.get_logger().error(f"設定ファイル '{config_path}' の読み込みに失敗しました: {e}")
 
     def add_subscription_for_topic(self, topic_name, msg_type_str, handler_info=None):
-        """指定されたトピックのサブスクリプションを作成する共通関数。"""
+        """指定されたトピックのサブスクリプションを作成する共通関数"""
         if topic_name in self.subscribed_topics:
             return  # 既に購読済み
 
@@ -118,16 +118,29 @@ class GNSSBridge(Node):
 
     def _handler_name_from_msg_type(self, msg_type_str):
         """'pkg/msg/TypeName' から ('type_name_handler', 'TypeNameHandler') を生成"""
-        type_name = msg_type_str.split('/')[-1]
+        if '/' in msg_type_str:
+            type_name = msg_type_str.split('/')[-1]
+        else:
+            type_name = msg_type_str
         #例: TypeName -> type_name
         module_name_snake = re.sub(r'(?<!^)(?=[A-Z])', '_', type_name).lower()
         return f"{module_name_snake}_handler", f"{type_name}Handler"
 
     def _import_type(self, type_str: str):
         """ 'pkg.module.Class' 形式の文字列から型をインポートする """
-        module_name, class_name = type_str.rsplit('.', 1)
-        module = importlib.import_module(module_name)
-        return getattr(module, class_name)
+
+        py_type_str = type_str.replace('/', '.')
+        parts = py_type_str.rsplit('.', 1)
+
+        if len(parts) == 2:
+            # 正常なケース: ['package.msg', 'Type']
+            module_name = parts[0]
+            class_name = parts[1]
+            module = importlib.import_module(module_name)
+            return getattr(module, class_name)
+        else:
+            # 異常なケース: '.' で分割できない、または予期せぬ形式
+            raise ImportError(f"メッセージ型 '{type_str}' は 'package.msg.Type' の形式ではないため、インポートできません。")
 
     def _import_handler(self, module_name: str, class_name: str):
         """ ハンドラモジュールとクラス名からクラスをインポートする """

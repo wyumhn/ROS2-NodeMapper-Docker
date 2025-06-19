@@ -1,16 +1,118 @@
 {
     "topics": [
         {
+            "name": "/flir_camera/camera_info",
+            "type": "sensor_msgs/msg/CameraInfo",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/flir_camera/image_color",
+            "type": "sensor_msgs/msg/Image",
+            "handler_module": "image_handler",
+            "handler_class": "ImageHandler"
+        },
+        {
+            "name": "/flir_camera/image_raw",
+            "type": "sensor_msgs/msg/Image",
+            "handler_module": "image_handler",
+            "handler_class": "ImageHandler"
+        },
+        {
             "name": "/gps/fix",
             "type": "sensor_msgs.msg.NavSatFix",
             "handler_module": "gps_fix_handler",
             "handler_class": "GpsFixHandler"
         },
         {
+            "name": "/image_raw",
+            "type": "sensor_msgs/msg/Image",
+            "handler_module": "image_handler",
+            "handler_class": "ImageHandler"
+        },
+        {
+            "name": "/imu/acceleration",
+            "type": "geometry_msgs/msg/Vector3Stamped",
+            "handler_module": "vector3_handler",
+            "handler_class": "Vector3Handler"
+        },
+        {
+            "name": "/imu/angular_velocity",
+            "type": "geometry_msgs/msg/Vector3Stamped",
+            "handler_module": "vector3_handler",
+            "handler_class": "Vector3Handler"
+        },
+        {
             "name": "/imu/data",
             "type": "sensor_msgs.msg.Imu",
             "handler_module": "imu_handler",
             "handler_class": "ImuHandler"
+        },
+        {
+            "name": "/imu/dq",
+            "type": "geometry_msgs/msg/QuaternionStamped",
+            "handler_module": "quaternion_handler",
+            "handler_class": "QuaternionHandler"
+        },
+        {
+            "name": "/imu/dv",
+            "type": "geometry_msgs/msg/Vector3Stamped",
+            "handler_module": "vector3_handler",
+            "handler_class": "Vector3Handler"
+        },
+        {
+            "name": "/imu/mag",
+            "type": "sensor_msgs/msg/MagneticField",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/imu/time_ref",
+            "type": "sensor_msgs/msg/TimeReference",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/life_cycle_pwm",
+            "type": "std_msgs/msg/Bool",
+            "handler_module": "bool_handler",
+            "handler_class": "BoolHandler"
+        },
+        {
+            "name": "/parameter_events",
+            "type": "rcl_interfaces/msg/ParameterEvent",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/pressure",
+            "type": "sensor_msgs/msg/FluidPressure",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/propeller_pwm",
+            "type": "std_msgs/msg/Int32MultiArray",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/temperature",
+            "type": "sensor_msgs/msg/Temperature",
+            "handler_module": "temperature_handler",
+            "handler_class": "TemperatureHandler"
+        },
+        {
+            "name": "/thermal_image",
+            "type": "sensor_msgs/msg/Image",
+            "handler_module": "image_handler",
+            "handler_class": "ImageHandler"
+        },
+        {
+            "name": "/velodyne_points",
+            "type": "sensor_msgs/msg/PointCloud2",
+            "handler_module": "pointcloud2_handler",
+            "handler_class": "PointCloud2Handler"
         },
         {
             "name": "/chatter",
