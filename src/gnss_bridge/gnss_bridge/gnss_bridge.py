@@ -45,37 +45,41 @@ class GNSSBridge(Node):
 
     def create_subscriptions_from_config(self):
 
+        self.get_logger().info("--- デバッグ ---")
+
         package_share_directory = get_package_share_directory('gnss_bridge')
         config_path = os.path.join(package_share_directory, 'config', 'topics.json')
+        self.get_logger().info(f"パス: {config_path}")
 
         try:
             with open(config_path, 'r') as f:
                 config_data = json.load(f)
+                self.get_logger().info(f"読み込んだ設定: {config_data}")
         except (FileNotFoundError, json.JSONDecodeError) as e:
             self.get_logger().error(f"設定ファイル '{config_path}' の読み込みに失敗しました: {e}")
             return
 
+        topics_list = config_data.get('topics', [])
+        self.get_logger().info(f"処理対象のトピック数: {len(topics_list)}")
+
         for topic_config in config_data.get('topics', []):
             handler_class = None
             try:
-                # ★★★ ここからが変更点 ★★★
-                # 1. まず、特定のハンドラを探しにいく
                 handler_module_str = topic_config['handler_module']
                 handler_class_str = topic_config['handler_class']
                 handler_class = self._import_handler(handler_module_str, handler_class_str)
                 self.get_logger().info(f"トピック '{topic_config['name']}' にハンドラ '{handler_class_str}' を使用します。")
 
             except (KeyError, ImportError, AttributeError):
-                # 2. ハンドラの指定がない、または見つからない場合はDefaultHandlerを使用
+
                 handler_class = DefaultHandler
                 self.get_logger().warn(f"ハンドラが見つからないため、トピック '{topic_config['name']}' にはDefaultHandlerを使用します。")
 
             try:
-                # 3. 取得できたハンドラクラスでインスタンスを作成
+
                 handler_instance = handler_class()
                 msg_type = self._import_type(topic_config['type'])
 
-                # 4. サブスクリプションを作成 (ここは以前と同じ)
                 self.create_subscription(
                     msg_type,
                     topic_config['name'],
