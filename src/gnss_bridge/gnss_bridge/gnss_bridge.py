@@ -8,6 +8,7 @@ import threading
 import importlib
 import functools
 from ament_index_python.packages import get_package_share_directory
+import re
 from gnss_bridge.handlers.default_handler import DefaultHandler
 
 from sensor_msgs.msg import NavSatFix
@@ -32,7 +33,12 @@ class GNSSBridge(Node):
         self.ws_thread.start()
 
         # サブスクライバを動的に作成
+        self.subscribed_topics = set()
+
         self.create_subscriptions_from_config()
+
+        self.discovery_timer = self.create_timer(5.0, self.discover_and_subscribe_topics)
+        self.get_logger().info("新しいトピックの動的検出を開始しました")
 
         self.get_logger().info("GNSSBridgeノードが起動しました。WebSocketサーバー: {self.ws_server_url}")
         self.get_logger().info("GNSSBridgeノード: 初期化を終了します")
@@ -43,9 +49,19 @@ class GNSSBridge(Node):
     # *--------------------------------------------------------
 
 
-    def create_subscriptions_from_config(self):
+    def discover_and_subscribe_topics(self):
 
         self.get_logger().info("--- デバッグ ---")
+        current_topics = self.get_topic_names_and_types()
+
+        for topic_name, msg_types in current_topics:
+            if topic_name not in self.subscribed_topics:
+                # msg_typesはリストなので最初の要素を使用
+                msg_type_str = msg_types[0]
+                self.get_logger().info(f"新しいトピックを検出: '{topic_name}' (型: {msg_type_str})")
+                self.add_subscription_for_topic(topic_name, msg_type_str)
+
+    def create_subscriptions_from_config(self):
 
         package_share_directory = get_package_share_directory('gnss_bridge')
         config_path = os.path.join(package_share_directory, 'config', 'topics.json')
@@ -54,42 +70,58 @@ class GNSSBridge(Node):
         try:
             with open(config_path, 'r') as f:
                 config_data = json.load(f)
-                self.get_logger().info(f"読み込んだ設定: {config_data}")
+            for topic_config in config_data.get('topics', []):
+                self.add_subscription_for_topic(
+                    topic_name=topic_config['name'],
+                    msg_type_str=topic_config['type'],
+                    handler_info=topic_config  # ハンドラ情報を渡す
+                )
         except (FileNotFoundError, json.JSONDecodeError) as e:
             self.get_logger().error(f"設定ファイル '{config_path}' の読み込みに失敗しました: {e}")
-            return
 
-        topics_list = config_data.get('topics', [])
-        self.get_logger().info(f"処理対象のトピック数: {len(topics_list)}")
+    def add_subscription_for_topic(self, topic_name, msg_type_str, handler_info=None):
+        """指定されたトピックのサブスクリプションを作成する共通関数。"""
+        if topic_name in self.subscribed_topics:
+            return  # 既に購読済み
 
-        for topic_config in config_data.get('topics', []):
-            handler_class = None
-            try:
-                handler_module_str = topic_config['handler_module']
-                handler_class_str = topic_config['handler_class']
-                handler_class = self._import_handler(handler_module_str, handler_class_str)
-                self.get_logger().info(f"トピック '{topic_config['name']}' にハンドラ '{handler_class_str}' を使用します。")
+        handler_instance = None
 
-            except (KeyError, ImportError, AttributeError):
+        try:
+            if handler_info and 'handler_module' in handler_info:
 
-                handler_class = DefaultHandler
-                self.get_logger().warn(f"ハンドラが見つからないため、トピック '{topic_config['name']}' にはDefaultHandlerを使用します。")
+                handler_class = self._import_handler(handler_info['handler_module'], handler_info['handler_class'])
+                self.get_logger().info(f"'{topic_name}'に設定ファイルからハンドラ'{handler_info['handler_class']}'を適用します。")
+            else:
 
-            try:
+                module_name, class_name = self._handler_name_from_msg_type(msg_type_str)
+                handler_class = self._import_handler(module_name, class_name)
+                self.get_logger().info(f"'{topic_name}'に規約ベースのハンドラ'{class_name}'を適用します。")
+            handler_instance = handler_class()
+        except (ImportError, AttributeError, TypeError):
 
-                handler_instance = handler_class()
-                msg_type = self._import_type(topic_config['type'])
+            self.get_logger().warn(f"'{topic_name}'に対応するハンドラが見つかりません。DefaultHandlerを使用します。")
+            handler_instance = DefaultHandler()
 
-                self.create_subscription(
-                    msg_type,
-                    topic_config['name'],
-                    functools.partial(self.generic_callback, handler=handler_instance, topic_name=topic_config['name']),
-                    10
-                )
-                self.get_logger().info(f"トピック '{topic_config['name']}' のサブスクリプションを作成しました。")
+        # サブスクリプション作成
+        try:
+            msg_type = self._import_type(msg_type_str)
+            self.create_subscription(
+                msg_type,
+                topic_name,
+                functools.partial(self.generic_callback, handler=handler_instance, topic_name=topic_name),
+                10
+            )
+            self.subscribed_topics.add(topic_name)
+            self.get_logger().info(f"トピック'{topic_name}'のサブスクリプションを作成しました。")
+        except Exception as e:
+            self.get_logger().error(f"'{topic_name}'のサブスクリプション作成に失敗しました: {e}")
 
-            except (KeyError, ImportError, AttributeError) as e:
-                self.get_logger().error(f"トピック設定 '{topic_config}' の処理中にエラー: {e}")
+    def _handler_name_from_msg_type(self, msg_type_str):
+        """'pkg/msg/TypeName' から ('type_name_handler', 'TypeNameHandler') を生成"""
+        type_name = msg_type_str.split('/')[-1]
+        #例: TypeName -> type_name
+        module_name_snake = re.sub(r'(?<!^)(?=[A-Z])', '_', type_name).lower()
+        return f"{module_name_snake}_handler", f"{type_name}Handler"
 
     def _import_type(self, type_str: str):
         """ 'pkg.module.Class' 形式の文字列から型をインポートする """
