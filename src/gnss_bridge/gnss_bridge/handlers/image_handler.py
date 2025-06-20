@@ -41,6 +41,7 @@ class ImageHandler(DataHandler):
                 # サポート外のエンコーディングの場合は警告を出して処理を中断
                 print(f"サポート外の画像エンコーディングです: {msg.encoding}")
                 return None
+
             print(f"画像をnumpy行列に変換:")
             pil_image = PILImage.fromarray(numpy_image)
             print(f"画像をPIL imageに変換:")
@@ -51,6 +52,7 @@ class ImageHandler(DataHandler):
                 scale_ratio = 1.0
             else:
                 scale_ratio = math.sqrt(TARGET_SIZE / original_area)
+
             print(f"画像のリサイズ後の縦横比を計算: {scale_ratio}")
 
             new_width = int(pil_image.width * scale_ratio)
