@@ -97,8 +97,8 @@ class GNSSBridge(Node):
                 handler_class = self._import_handler(module_name, class_name)
                 self.get_logger().info(f"'{topic_name}'に規約ベースのハンドラ'{class_name}'を適用します。")
             handler_instance = handler_class()
-        except (ImportError, AttributeError, TypeError):
-
+        except (ImportError, AttributeError, TypeError) as e:
+            self.get_logger().error(f"'{topic_name}'のハンドラ読み込みに失敗しました！ 原因: [{type(e).__name__}] {e}")
             self.get_logger().warn(f"'{topic_name}'に対応するハンドラが見つかりません。DefaultHandlerを使用します。")
             handler_instance = DefaultHandler()
 

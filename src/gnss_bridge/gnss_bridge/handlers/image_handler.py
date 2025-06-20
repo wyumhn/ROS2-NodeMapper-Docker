@@ -19,7 +19,7 @@ class ImageHandler(DataHandler):
         Imageメッセージから画像データを抽出し、メタデータと共に
         Base64エンコードされた辞書として返す
         """
-        print(f"画像圧縮処理を開始:")
+
         # 圧縮後の画像サイズ（目標）
         TARGET_SIZE = 640 * 480
 
