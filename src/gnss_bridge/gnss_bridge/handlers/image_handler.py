@@ -29,7 +29,12 @@ class ImageHandler(DataHandler):
             print(f"画像をPIL imageに変換:")
 
             original_area = pil_image.width * pil_image.height
-            scale_ratio = math.sqrt(TARGET_SIZE / original_area)
+
+            if original_area == 0 or original_area <= TARGET_SIZE:
+                scale_ratio = 1.0
+            else:
+                scale_ratio = math.sqrt(TARGET_SIZE / original_area)
+            print(f"画像のリサイズ後の縦横比を計算: {scale_ratio}")
 
             new_width = int(pil_image.width * scale_ratio)
             new_height = int(pil_image.height * scale_ratio)
