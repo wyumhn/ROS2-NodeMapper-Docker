@@ -16,6 +16,7 @@
         "/thermal_image=1",
         "/velodyne_packets=1",
         "/velodyne_points=1"
+        "/rosout=10"
       ]
     }
   }
