@@ -28,7 +28,7 @@ class ImageHandler(DataHandler):
                 raw_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width)
                 numpy_image = cv2.cvtColor(raw_image, cv2.COLOR_BAYER_GB2BGR)
                 numpy_image = numpy_image[:, :, ::-1] # BGR -> RGB
-            if msg.encoding in ['rgb8', 'bgr8']:
+            elif msg.encoding in ['rgb8', 'bgr8']:
                 # 3チャンネルのカラー画像
                 numpy_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, 3)
                 # BGR形式の場合は、Pillowが扱えるRGB形式にチャンネルを入れ替える
@@ -73,17 +73,17 @@ class ImageHandler(DataHandler):
             image_data_base64 = base64.b64encode(compressed_data).decode('utf-8')
 
             return {
-                "height": pil_image.height,
-                "width": pil_image.width,
+                "height": resized_image.height,
+                "width": resized_image.width,
                 "encoding": "jpeg",
-                "step": pil_image.width * 3,
+                "step": resized_image.width * 3,
                 "data": image_data_base64
             }
 
         except Exception as e:
             # 圧縮中にエラーが発生した場合は、念のため元のデータをそのまま送る
             print(f"画像の圧縮に失敗しました: {e}")
-            pass
+            return None
 
         # --- 通常処理（圧縮しない場合） ---
 
