@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     python3-colcon-common-extensions \
     python3-websockets \
     python3-rosdep \
+    libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/* \
     && echo "deb [trusted=yes] https://download.eclipse.org/zenoh/debian-repo/ /" | tee /etc/apt/sources.list.d/zenoh.list \
     \
