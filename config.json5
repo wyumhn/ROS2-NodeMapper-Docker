@@ -12,11 +12,11 @@
         "/image_raw=1",
         "/imu/.*=10",
         "/scan=1",
+        "/rosout=4",
         "/temperature=1",
         "/thermal_image=1",
         "/velodyne_packets=1",
         "/velodyne_points=1"
-        "/rosout=10"
       ]
     }
   }
