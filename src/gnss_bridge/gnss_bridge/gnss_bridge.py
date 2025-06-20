@@ -177,12 +177,12 @@ class GNSSBridge(Node):
 
                 async with websockets.connect(self.ws_server_url) as websocket:
                     await websocket.send(json.dumps(data))
-                    self.get_logger().info(f"送信成功: {data}")
+                    #self.get_logger().info(f"送信成功: {data}")
 
             except (websockets.exceptions.ConnectionClosed, ConnectionRefusedError, OSError) as e:
-                self.get_logger().warn(f"WebSocket接続または送信に失敗しました: {e}。次のメッセージで再試行します")
+                self.get_logger().warn(f"WebSocket接続または送信に失敗しました: {e}。次のメッセージで再試行します: {data}")
             except Exception as e:
-                self.get_logger().error(f"WebSocket処理中に予期せぬエラーが発生しました: {e}")
+                self.get_logger().error(f"WebSocket処理中に予期せぬエラーが発生しました: {e}。: {data}")
 
             # キューのタスクが完了したことを通知
             self.queue.task_done()

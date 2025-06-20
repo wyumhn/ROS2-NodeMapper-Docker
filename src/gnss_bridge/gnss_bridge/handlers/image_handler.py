@@ -24,20 +24,26 @@ class ImageHandler(DataHandler):
         try:
 
             numpy_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, -1)
+            self.get_logger().info(f"画像をnumpy行列に変換:")
             pil_image = PILImage.fromarray(numpy_image)
+            self.get_logger().info(f"画像をPIL imageに変換:")
 
             original_area = pil_image.width * pil_image.height
             scale_ratio = math.sqrt(TARGET_SIZE / original_area)
 
             new_width = int(pil_image.width * scale_ratio)
             new_height = int(pil_image.height * scale_ratio)
+            self.get_logger().info(f"画像を新しい縦横比に変更: {new_height} * {new_width}")
 
             # 4. 計算した新しいサイズにリサイズ
             resized_image = pil_image.resize((new_width, new_height), PILImage.Resampling.LANCZOS)
+            self.get_logger().info(f"画像をリサイズ:")
 
             buffer = io.BytesIO()
             pil_image.save(buffer, format="JPEG", quality=85)
+            self.get_logger().info(f"画像を JPEG 形式で保存:")
             compressed_data = buffer.getvalue()
+            self.get_logger().info(f"画像の圧縮を完了:")
 
             image_data_base64 = base64.b64encode(compressed_data).decode('utf-8')
 
@@ -51,15 +57,16 @@ class ImageHandler(DataHandler):
 
         except Exception as e:
             # 圧縮中にエラーが発生した場合は、念のため元のデータをそのまま送る
+            self.get_logger().warn(f"画像の圧縮に失敗しました: {e}")
             pass
 
         # --- 通常処理（圧縮しない場合） ---
 
-        image_data_base64 = base64.b64encode(msg.data).decode('utf-8')
-        return {
-            "height": msg.height,
-            "width": msg.width,
-            "encoding": msg.encoding,
-            "step": msg.step,
-            "data": image_data_base64
-        }
+        #image_data_base64 = base64.b64encode(msg.data).decode('utf-8')
+        #return {
+        #    "height": msg.height,
+        #    "width": msg.width,
+        #    "encoding": msg.encoding,
+        #    "step": msg.step,
+        #    "data": image_data_base64
+        #}
