@@ -22,8 +22,19 @@ class ImageHandler(DataHandler):
         TARGET_SIZE = 640 * 480
 
         try:
-
-            numpy_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, -1)
+            if msg.encoding in ['rgb8', 'bgr8']:
+                # 3チャンネルのカラー画像
+                numpy_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, 3)
+                # BGR形式の場合は、Pillowが扱えるRGB形式にチャンネルを入れ替える
+                if msg.encoding == 'bgr8':
+                    numpy_image = numpy_image[:, :, ::-1] # BGR -> RGB
+            elif msg.encoding == 'mono8':
+                # 8-bitのグレースケール画像
+                numpy_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width)
+            else:
+                # サポート外のエンコーディングの場合は警告を出して処理を中断
+                print(f"サポート外の画像エンコーディングです: {msg.encoding}")
+                return None
             print(f"画像をnumpy行列に変換:")
             pil_image = PILImage.fromarray(numpy_image)
             print(f"画像をPIL imageに変換:")
@@ -43,6 +54,9 @@ class ImageHandler(DataHandler):
             # 4. 計算した新しいサイズにリサイズ
             resized_image = pil_image.resize((new_width, new_height), PILImage.Resampling.LANCZOS)
             print(f"画像をリサイズ:")
+
+            if resized_image.mode != 'RGB':
+                resized_image = resized_image.convert('RGB')
 
             buffer = io.BytesIO()
             resized_image.save(buffer, format="JPEG", quality=85)
