@@ -16,7 +16,12 @@ setup(
         (os.path.join('share', package_name, 'config'), glob('config/*.json')),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
     ],
-    install_requires=['setuptools'],
+    install_requires=[
+        'setuptools',
+        'websockets',
+        'numpy',
+        'Pillow'
+    ],
     zip_safe=True,
     maintainer='you',
     maintainer_email='you@example.com',
