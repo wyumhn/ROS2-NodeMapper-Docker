@@ -19,7 +19,7 @@ class ImageHandler(DataHandler):
         Base64エンコードされた辞書として返す
         """
         # 圧縮後の画像サイズ（目標）
-        TARGET_SIZE = (640, 480)
+        TARGET_SIZE = 640 * 480
 
         try:
 
@@ -45,7 +45,7 @@ class ImageHandler(DataHandler):
             print(f"画像をリサイズ:")
 
             buffer = io.BytesIO()
-            pil_image.save(buffer, format="JPEG", quality=85)
+            resized_image.save(buffer, format="JPEG", quality=85)
             print(f"画像を JPEG 形式で保存:")
             compressed_data = buffer.getvalue()
             print(f"画像の圧縮を完了:")
