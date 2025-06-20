@@ -20,7 +20,8 @@ setup(
         'setuptools',
         'websockets',
         'numpy',
-        'Pillow'
+        'Pillow',
+        'opencv-python'
     ],
     zip_safe=True,
     maintainer='you',

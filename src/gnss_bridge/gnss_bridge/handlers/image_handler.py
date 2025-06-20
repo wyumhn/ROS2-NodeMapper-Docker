@@ -3,6 +3,7 @@ from gnss_bridge.data_handler import DataHandler
 from sensor_msgs.msg import Image
 # 画像圧縮のためにPillow(PIL), NumPy, ioをインポート
 from PIL import Image as PILImage
+import cv2
 import numpy as np
 import io
 import math
@@ -22,6 +23,11 @@ class ImageHandler(DataHandler):
         TARGET_SIZE = 640 * 480
 
         try:
+            if msg.encoding == 'bayer_gbrg8':
+                # 1a. Bayerパターンのデータを1チャンネルのグレースケール画像として読み込む
+                raw_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width)
+                numpy_image = cv2.cvtColor(raw_image, cv2.COLOR_BAYER_GB2BGR)
+                numpy_image = numpy_image[:, :, ::-1] # BGR -> RGB
             if msg.encoding in ['rgb8', 'bgr8']:
                 # 3チャンネルのカラー画像
                 numpy_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width, 3)
