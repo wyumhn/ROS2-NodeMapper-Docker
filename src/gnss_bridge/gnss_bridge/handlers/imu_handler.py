@@ -3,11 +3,11 @@ from sensor_msgs.msg import Imu
 
 class ImuHandler(DataHandler):
     """
-    sensor_msgs/Imu メッセージを処理するハンドラ。
+    sensor_msgs/Imu メッセージを処理するハンドラ
     """
     def process(self, msg: Imu) -> dict:
         """
-        Imuメッセージから角速度と線形加速度を抽出し、指定された形式の辞書を返す。
+        Imuメッセージから角速度と線形加速度を抽出し、指定された形式の辞書を返す
         """
         return {
             "angular_velocity": {

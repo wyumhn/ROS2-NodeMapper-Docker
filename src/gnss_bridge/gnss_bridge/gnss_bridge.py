@@ -150,12 +150,13 @@ class GNSSBridge(Node):
 
     def generic_callback(self, msg, handler, topic_name: str):
         """すべてのサブスクリプションで共有される汎用コールバック"""
+        self.get_logger().debug(f"受信 ({topic_name}): ハンドラ名 {handler}")
         payload = handler.process(msg)
-        if payload:
+        if payload is not None:
             # ここで topic 属性を追加
             payload['topic'] = topic_name
 
-            self.get_logger().debug(f"受信 ({topic_name}): {payload}")
+            self.get_logger().debug(f"キューに追加 ({topic_name}): {payload}")
             self.loop.call_soon_threadsafe(self.queue.put_nowait, payload)
 
     # *--------------------------------------------------------
