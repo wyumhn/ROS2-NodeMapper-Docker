@@ -8,7 +8,7 @@ import threading
 import importlib
 import functools
 from ament_index_python.packages import get_package_share_directory
-from rosidl_runtime_py.utilities import message_to_ordereddict
+from rosidl_runtime_py.convert import message_to_dict
 from rclpy.serialization import serialize_message
 import re
 from gnss_bridge.handlers.default_handler import DefaultHandler
@@ -157,21 +157,20 @@ class GNSSBridge(Node):
         if payload is not None:
             # ここで topic 属性を追加
             payload['topic'] = topic_name
-
-            try:
-                serialized_msg = serialize_message(msg)
-
-                if len(serialized_msg) > 10240:
-                    raw_data_dict = message_to_ordereddict(msg)
-                    # フロントエンドで区別できるよう、特別なトピック名を付与
-                    raw_data_dict['topic'] = f"raw_monitor/{topic_name.lstrip('/')}"
-                    self.get_logger().info(f"[生データ] キューに追加: {raw_data_dict['topic']}")
-                    self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
-            except Exception as e:
-                self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
-
             self.get_logger().debug(f"キューに追加 ({topic_name}): {payload}")
             self.loop.call_soon_threadsafe(self.queue.put_nowait, payload)
+
+        try:
+            serialized_msg = serialize_message(msg)
+
+            if len(serialized_msg) > 10240:
+                raw_data_dict = message_to_ordereddict(msg)
+                self.get_logger().info(f"[生データ] キューに追加 (サイズ: {len(serialized_msg)/1024:.2f} KB): {raw_data_dict['topic']}")
+                self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
+        except Exception as e:
+            self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
+
+
 
     # *--------------------------------------------------------
     #   WebSocket接続・データ送信
