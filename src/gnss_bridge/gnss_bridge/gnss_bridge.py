@@ -8,7 +8,7 @@ import threading
 import importlib
 import functools
 from ament_index_python.packages import get_package_share_directory
-from rosidl_runtime_py.convert import message_to_orderreddict
+from rosidl_runtime_py.convert import message_to_ordereddict
 from rclpy.serialization import serialize_message
 import re
 from gnss_bridge.handlers.default_handler import DefaultHandler
