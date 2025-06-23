@@ -161,12 +161,10 @@ class GNSSBridge(Node):
             self.loop.call_soon_threadsafe(self.queue.put_nowait, payload)
 
         try:
-            serialized_msg = serialize_message(msg)
-            self.get_logger().error(f"メッセージをシリアル化")
-            if len(serialized_msg) > 10240:
+            if len(msg) < 2048:
                 self.get_logger().error(f"メッセージの辞書化開始")
                 raw_data_dict = message_to_ordereddict(msg)
-                self.get_logger().info(f"[生データ] キューに追加 (サイズ: {len(serialized_msg)/1024:.2f} KB): {raw_data_dict['topic']}")
+                self.get_logger().info(f"[生データ] キューに追加 (サイズ: {raw_data_dict['topic']}")
                 self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
         except Exception as e:
             self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
