@@ -37,6 +37,10 @@ class GNSSBridge(Node):
         # サブスクライバを動的に作成
         self.subscribed_topics = set()
 
+        self.ignore_list = []
+        self.topic_configs = []
+        self.load_config()
+
         self.create_subscriptions_from_config()
 
         self.discovery_timer = self.create_timer(5.0, self.discover_and_subscribe_topics)
