@@ -192,32 +192,35 @@ class GNSSBridge(Node):
         return getattr(module, class_name)
 
     def generic_callback(self, msg, handler, topic_name: str, msg_type_str: str):
-        """すべてのサブスクリプションで共有される汎用コールバック"""
+        # 1. ハンドラでメッセージを基本的なデータ辞書に変換
         self.get_logger().debug(f"受信 ({topic_name}): ハンドラ名 {handler}")
         payload = handler.process(msg)
-        if payload is not None:
-            # ここで topic 属性を追加
-            payload['topic'] = topic_name
-            self.get_logger().debug(f"キューに追加 ({topic_name}): {payload}")
-            self.loop.call_soon_threadsafe(self.queue.put_nowait, payload)
 
+        # 処理に失敗した場合は何もしない
+        if payload is None:
+            self.get_logger().error(f"トピックの辞書変換に失敗したので、トピック送信を中断します ({topic_name}): {e}")
+            return
 
-        #try:
-        #
-        #    # 容量が10KB (10 * 1024 bytes) を超えているか
-        #    if msg_type_str not in ['sensor_msgs/msg/Image', 'sensor_msgs/msg/PointCloud2']:
-        #        self.get_logger().info(f"'{topic_name}' の生データを送信します。")
-        #
-        #        # ROSメッセージ全体を辞書に変換
-        #        raw_data_dict = message_to_ordereddict(msg)
-        #        self.get_logger().info(f"[生データ] キューに追加 (: {raw_data_dict}")
-        #        self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
-        #
-        #    else:
-        #        self.get_logger().info(f"'{topic_name}' は Image 型なので、生データを送信しません。（: {raw_data_dict['topic']}）")
-        #
-        #except Exception as e:
-        #    self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
+        # 2. トピック名をペイロードに追加
+        payload['topic'] = topic_name
+
+        # 3. 画像と点群以外の場合は、生データをペイロードにネストさせる
+        if msg_type_str not in ['sensor_msgs/msg/Image', 'sensor_msgs/msg/PointCloud2']:
+            try:
+                # ROSメッセージを生データ辞書に変換
+                raw_data_dict = message_to_ordereddict(msg)
+                self.get_logger().info(f"[生データ] キューに追加 (: {raw_data_dict}")
+
+                # 生データを '_raw' キーでペイロードに追加
+                payload['raw_message'] = raw_data_dict
+                self.get_logger().info(f"'{topic_name}' の生データをペイロードに追加しました")
+
+            except Exception as e:
+                self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
+
+        # 4. 最終的にできあがった単一のペイロードをキューに入れる
+        self.get_logger().info(f"[統合済] キューに追加: {topic_name}")
+        self.loop.call_soon_threadsafe(self.queue.put_nowait, payload)
 
 
     # *--------------------------------------------------------
