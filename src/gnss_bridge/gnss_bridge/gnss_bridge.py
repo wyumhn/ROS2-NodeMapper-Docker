@@ -46,6 +46,30 @@ class GNSSBridge(Node):
         self.get_logger().info("GNSSBridgeノード: 初期化を終了します")
 
 
+    def load_config(self):
+        package_share_directory = get_package_share_directory('gnss_bridge')
+        config_path = os.path.join(package_share_directory, 'config', 'topics.json')
+
+        # デフォルトで無視する内部トピック
+        default_ignores = ['/rosout', '/parameter_events']
+
+        try:
+            with open(config_path, 'r') as f:
+                config_data = json.load(f)
+
+            self.topic_configs = config_data.get('topics', [])
+            self.ignore_list = config_data.get('ignore_list', [])
+
+            for topic in default_ignores:
+                if topic not in self.ignore_list:
+                    self.ignore_list.append(topic)
+
+            self.get_logger().info(f"設定ファイルから読み込んだ無視リスト: {self.ignore_list}")
+
+        except (FileNotFoundError, json.JSONDecodeError):
+            self.get_logger().warn(f"設定ファイル'{config_path}'が見つからないか無効です。デフォルトの無視リストを使用します。")
+            self.ignore_list = default_ignores
+
     # *--------------------------------------------------------
     #   サブスクライバの作成・データ受信
     # *--------------------------------------------------------
@@ -82,9 +106,14 @@ class GNSSBridge(Node):
             self.get_logger().error(f"設定ファイル '{config_path}' の読み込みに失敗しました: {e}")
 
     def add_subscription_for_topic(self, topic_name, msg_type_str, handler_info=None):
-        """指定されたトピックのサブスクリプションを作成する共通関数"""
+        # ★ 修正点2: ハードコーディングではなく、ignore_listでチェック
+        if topic_name in self.ignore_list:
+            self.get_logger().debug(f"トピック '{topic_name}' は無視リストに含まれているためスキップします。")
+            return
+
         if topic_name in self.subscribed_topics:
-            return  # 既に購読済み
+            return
+
 
         handler_instance = None
 

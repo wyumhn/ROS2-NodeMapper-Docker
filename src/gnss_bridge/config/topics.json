@@ -1,4 +1,8 @@
 {
+    "ignore_list": [
+        "/rosout",
+        "/parameter_events"
+    ],
     "topics": [
         {
             "name": "/flir_camera/camera_info",
