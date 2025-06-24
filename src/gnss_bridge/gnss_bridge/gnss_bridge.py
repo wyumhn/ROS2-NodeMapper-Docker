@@ -176,10 +176,7 @@ class GNSSBridge(Node):
 
                 # ROSメッセージ全体を辞書に変換
                 raw_data_dict = message_to_ordereddict(msg)
-
-                # フロントエンドで区別できるよう、特別なトピック名を付与
-                raw_data_dict['topic'] = f"raw_monitor/{topic_name.lstrip('/')}"
-                self.get_logger().info(f"[生データ] キューに追加 (: {raw_data_dict['topic']}")
+                self.get_logger().info(f"[生データ] キューに追加 (: {raw_data_dict}")
                 self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
 
             else:
