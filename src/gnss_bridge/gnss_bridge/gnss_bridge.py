@@ -168,22 +168,23 @@ class GNSSBridge(Node):
             self.get_logger().debug(f"キューに追加 ({topic_name}): {payload}")
             self.loop.call_soon_threadsafe(self.queue.put_nowait, payload)
 
-        try:
 
-            # 容量が10KB (10 * 1024 bytes) を超えているか
-            if msg_type_str not in ['sensor_msgs/msg/Image', 'sensor_msgs/msg/PointCloud2']:
-                self.get_logger().info(f"'{topic_name}' の生データを送信します。")
-
-                # ROSメッセージ全体を辞書に変換
-                raw_data_dict = message_to_ordereddict(msg)
-                self.get_logger().info(f"[生データ] キューに追加 (: {raw_data_dict}")
-                self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
-
-            else:
-                self.get_logger().info(f"'{topic_name}' は Image 型なので、生データを送信しません。（: {raw_data_dict['topic']}）")
-
-        except Exception as e:
-            self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
+        #try:
+        #
+        #    # 容量が10KB (10 * 1024 bytes) を超えているか
+        #    if msg_type_str not in ['sensor_msgs/msg/Image', 'sensor_msgs/msg/PointCloud2']:
+        #        self.get_logger().info(f"'{topic_name}' の生データを送信します。")
+        #
+        #        # ROSメッセージ全体を辞書に変換
+        #        raw_data_dict = message_to_ordereddict(msg)
+        #        self.get_logger().info(f"[生データ] キューに追加 (: {raw_data_dict}")
+        #        self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
+        #
+        #    else:
+        #        self.get_logger().info(f"'{topic_name}' は Image 型なので、生データを送信しません。（: {raw_data_dict['topic']}）")
+        #
+        #except Exception as e:
+        #    self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
 
 
     # *--------------------------------------------------------
