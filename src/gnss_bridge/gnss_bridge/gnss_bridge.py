@@ -150,7 +150,7 @@ class GNSSBridge(Node):
         module = importlib.import_module(full_module_name)
         return getattr(module, class_name)
 
-    def generic_callback(self, msg, handler, topic_name: str):
+    def generic_callback(self, msg, handler, topic_name: str, msg_type_str: str):
         """すべてのサブスクリプションで共有される汎用コールバック"""
         self.get_logger().debug(f"受信 ({topic_name}): ハンドラ名 {handler}")
         payload = handler.process(msg)
@@ -162,21 +162,21 @@ class GNSSBridge(Node):
 
         try:
 
-            # メッセージをシリアライズして正確なバイトサイズを取得
-            serialized_msg = serialize_message(msg)
-            data_size = len(serialized_msg)
-
             # 容量が10KB (10 * 1024 bytes) を超えているか
-            if data_size > 10240:
-                self.get_logger().info(f"'{topic_name}' のシリアライズ後のサイズが10KBを超えました。生データを送信します。")
+            if msg_type_str != 'sensor_msgs/msg/Image' or msg_type_str != 'sensor_msgs/msg/PointCloud2':
+                self.get_logger().info(f"'{topic_name}' の生データを送信します。")
 
                 # ROSメッセージ全体を辞書に変換
                 raw_data_dict = message_to_ordereddict(msg)
 
                 # フロントエンドで区別できるよう、特別なトピック名を付与
                 raw_data_dict['topic'] = f"raw_monitor/{topic_name.lstrip('/')}"
-                self.get_logger().info(f"[生データ] キューに追加 (サイズ: {data_size/1024:.2f} KB): {raw_data_dict['topic']}")
+                self.get_logger().info(f"[生データ] キューに追加 (: {raw_data_dict['topic']}")
                 self.loop.call_soon_threadsafe(self.queue.put_nowait, raw_data_dict)
+
+            else:
+                self.get_logger().info(f"'{topic_name}' は Image 型なので、生データを送信しません。（: {raw_data_dict['topic']}）")
+
         except Exception as e:
             self.get_logger().error(f"生データの変換に失敗 ({topic_name}): {e}")
 
