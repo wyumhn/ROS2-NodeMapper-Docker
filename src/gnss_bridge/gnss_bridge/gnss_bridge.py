@@ -107,10 +107,18 @@ class GNSSBridge(Node):
         # サブスクリプション作成
         try:
             msg_type = self._import_type(msg_type_str)
+
+            callback_with_args = functools.partial(
+                self.generic_callback,
+                handler=handler_instance,
+                topic_name=topic_name,
+                msg_type_str=msg_type_str
+            )
+
             self.create_subscription(
                 msg_type,
                 topic_name,
-                functools.partial(self.generic_callback, handler=handler_instance, topic_name=topic_name),
+                callback_with_args,
                 10
             )
             self.subscribed_topics.add(topic_name)
@@ -163,7 +171,7 @@ class GNSSBridge(Node):
         try:
 
             # 容量が10KB (10 * 1024 bytes) を超えているか
-            if msg_type_str != 'sensor_msgs/msg/Image' or msg_type_str != 'sensor_msgs/msg/PointCloud2':
+            if msg_type_str not in ['sensor_msgs/msg/Image', 'sensor_msgs/msg/PointCloud2']:
                 self.get_logger().info(f"'{topic_name}' の生データを送信します。")
 
                 # ROSメッセージ全体を辞書に変換
