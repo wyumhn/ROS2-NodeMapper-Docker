@@ -27,7 +27,7 @@ class ImageHandler(DataHandler):
             if msg.encoding == 'bayer_gbrg8':
                 # 1a. Bayerパターンのデータを1チャンネルのグレースケール画像として読み込む
                 raw_image = np.frombuffer(msg.data, dtype=np.uint8).reshape(msg.height, msg.width)
-                numpy_image = cv2.cvtColor(raw_image, cv2.COLOR_BAYER_GB2BGR)
+                numpy_image = cv2.cvtColor(raw_image, cv2.COLOR_BAYER_GR2BGR)
                 numpy_image = numpy_image[:, :, ::-1] # BGR -> RGB
             elif msg.encoding in ['rgb8', 'bgr8']:
                 # 3チャンネルのカラー画像
