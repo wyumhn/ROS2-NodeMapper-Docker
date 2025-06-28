@@ -1,6 +1,7 @@
 {
   plugins: {
     ros2dds: {
+      ros_localhost_only: false,
       reliable_routes_blocking: false,
       pub_max_frequencies: [
         "/filter/free_acceleration=1",

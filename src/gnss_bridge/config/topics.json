@@ -3,6 +3,16 @@
         "/rosout",
         "/parameter_events"
     ],
+    "ignore_rawdata_list": [
+        "/mic1/audio",
+        "/mic2/audio",
+        "/mic3/audio",
+        "/mic4/audio",
+        "/mic5/audio",
+        "/mic6/audio",
+        "/mic7/audio",
+        "/mic8/audio"
+    ],
     "topics": [
         {
             "name": "/filter/free_acceleration",

@@ -38,6 +38,7 @@ class GNSSBridge(Node):
         self.subscribed_topics = set()
 
         self.ignore_list = []
+        self.ignore_rawdata_list = []
         self.topic_configs = []
         self.load_config()
 
@@ -63,12 +64,13 @@ class GNSSBridge(Node):
 
             self.topic_configs = config_data.get('topics', [])
             self.ignore_list = config_data.get('ignore_list', [])
+            self.ignore_rawdata_list = config_data.get('ignore_rawdata_list', [])
 
             for topic in default_ignores:
                 if topic not in self.ignore_list:
                     self.ignore_list.append(topic)
 
-            self.get_logger().info(f"設定ファイルから読み込んだ無視リスト: {self.ignore_list}")
+            self.get_logger().info(f"設定ファイルから読み込んだ無視リスト: {self.ignore_list}, {self.ignore_rawdata_list}")
 
         except (FileNotFoundError, json.JSONDecodeError):
             self.get_logger().warn(f"設定ファイル'{config_path}'が見つからないか無効です。デフォルトの無視リストを使用します。")
@@ -110,9 +112,8 @@ class GNSSBridge(Node):
             self.get_logger().error(f"設定ファイル '{config_path}' の読み込みに失敗しました: {e}")
 
     def add_subscription_for_topic(self, topic_name, msg_type_str, handler_info=None):
-        # ★ 修正点2: ハードコーディングではなく、ignore_listでチェック
+
         if topic_name in self.ignore_list:
-            self.get_logger().debug(f"トピック '{topic_name}' は無視リストに含まれているためスキップします。")
             return
 
         if topic_name in self.subscribed_topics:
@@ -204,8 +205,8 @@ class GNSSBridge(Node):
         # 2. トピック名をペイロードに追加
         payload['topic'] = topic_name
 
-        # 3. 画像と点群以外の場合は、生データをペイロードにネストさせる
-        if msg_type_str not in ['sensor_msgs/msg/Image', 'sensor_msgs/msg/PointCloud2']:
+        # 3. 除外リストに含まれるトピック・画像と点群以外の場合は、生データをペイロードにネストさせる
+        if topic_name not in self.ignore_rawdata_list and msg_type_str not in ['sensor_msgs/msg/Image', 'sensor_msgs/msg/PointCloud2']:
             try:
                 # ROSメッセージを生データ辞書に変換
                 raw_data_dict = message_to_ordereddict(msg)
