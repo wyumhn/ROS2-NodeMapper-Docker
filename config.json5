@@ -3,10 +3,10 @@
     ros2dds: {
       reliable_routes_blocking: false,
       pub_max_frequencies: [
-        "/filter/free_acceleration=3",
-        "/filter/positionlla=3",
+        "/filter/free_acceleration=1",
+        "/filter/positionlla=1",
         "/filter/quaternion=3",
-        "/filter/twist=3",
+        "/filter/twist=1",
         "/filter/velocity=3",
         "/filr_camera/camera_info=1",
         "/filr_camera/image_color=1",
