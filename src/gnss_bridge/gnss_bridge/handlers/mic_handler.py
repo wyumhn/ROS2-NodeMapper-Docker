@@ -1,6 +1,6 @@
 from gnss_bridge.data_handler import DataHandler
 
-class MicHandler(MicHandler):
+class MicHandler(DataHandler):
     """
     特定のハンドラが定義されていないトピックに使用されるデフォルトのハンドラ
     このハンドラはペイロードを処理せず、常に空の辞書を返す
