@@ -1,5 +1,6 @@
 {
     "ignore_list": [
+        "/diagnostics",
         "/rosout",
         "/parameter_events"
     ],
