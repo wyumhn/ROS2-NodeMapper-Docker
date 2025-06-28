@@ -5,6 +5,36 @@
     ],
     "topics": [
         {
+            "name": "/filter/free_acceleration",
+            "type": "geometry_msgs/msg/Vector3Stamped",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/filter/positionlla",
+            "type": "geometry_msgs/msg/Vector3Stamped",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/filter/quaternion",
+            "type": "geometry_msgs/msg/QuaternionStamped",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/filter/twist",
+            "type": "geometry_msgs/msg/TwistStamped",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
+            "name": "/filter/velocity",
+            "type": "geometry_msgs/msg/Vector3Stamped",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
             "name": "/flir_camera/camera_info",
             "type": "sensor_msgs/msg/CameraInfo",
             "handler_module": "default_handler",
@@ -21,6 +51,12 @@
             "type": "sensor_msgs/msg/Image",
             "handler_module": "image_handler",
             "handler_class": "ImageHandler"
+        },
+        {
+            "name": "/flow_rate_lpm",
+            "type": "std_msgs/msg/Float32",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
         },
         {
             "name": "/gps/fix",
@@ -77,10 +113,64 @@
             "handler_class": "DefaultHandler"
         },
         {
+            "name": "/ina219_data",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "default_handler",
+            "handler_class": "DefaultHandler"
+        },
+        {
             "name": "/life_cycle_pwm",
             "type": "std_msgs/msg/Bool",
             "handler_module": "bool_handler",
             "handler_class": "BoolHandler"
+        },
+        {
+            "name": "/mic1/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic2/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic3/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic4/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic5/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic6/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic7/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic8/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
         },
         {
             "name": "/parameter_events",
