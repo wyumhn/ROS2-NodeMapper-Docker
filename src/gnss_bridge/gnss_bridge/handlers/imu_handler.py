@@ -35,8 +35,8 @@ class ImuHandler(DataHandler):
 
         return {
             "euler_angles": {
-                "roll": roll_x,
-                "pitch": pitch_y,
-                "yaw": yaw_z
+                "roll": math.degrees(roll_x),
+                "pitch": math.degrees(pitch_y),
+                "yaw": math.degrees(yaw_z)
             }
         }
