@@ -4,6 +4,7 @@
       ros_localhost_only: false,
       reliable_routes_blocking: false,
       pub_max_frequencies: [
+        "/diagnostics=1",
         "/filter/free_acceleration=1",
         "/filter/positionlla=1",
         "/filter/quaternion=3",
