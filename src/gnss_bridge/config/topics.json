@@ -64,6 +64,12 @@
             "handler_class": "ImageHandler"
         },
         {
+            "name": "/image_color/compressed",
+            "type": "sensor_msgs/msg/CompressedImage",
+            "handler_module": "image_handler",
+            "handler_class": "ImageHandler"
+        },
+        {
             "name": "/flow_rate_lpm",
             "type": "std_msgs/msg/Float32",
             "handler_module": "default_handler",
@@ -78,6 +84,12 @@
         {
             "name": "/image_raw",
             "type": "sensor_msgs/msg/Image",
+            "handler_module": "image_handler",
+            "handler_class": "ImageHandler"
+        },
+        {
+            "name": "/image_raw/compressed",
+            "type": "sensor_msgs/msg/CompressedImage",
             "handler_module": "image_handler",
             "handler_class": "ImageHandler"
         },
@@ -210,6 +222,12 @@
         {
             "name": "/thermal_image",
             "type": "sensor_msgs/msg/Image",
+            "handler_module": "image_handler",
+            "handler_class": "ImageHandler"
+        },
+        {
+            "name": "/thermal_image/compressed",
+            "type": "sensor_msgs/msg/CompressedImage",
             "handler_module": "image_handler",
             "handler_class": "ImageHandler"
         },
