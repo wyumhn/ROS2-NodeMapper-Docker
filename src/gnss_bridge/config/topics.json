@@ -66,8 +66,8 @@
         {
             "name": "/image_color/compressed",
             "type": "sensor_msgs/msg/CompressedImage",
-            "handler_module": "image_handler",
-            "handler_class": "ImageHandler"
+            "handler_module": "compressed_image_handler",
+            "handler_class": "CompressedImageHandler"
         },
         {
             "name": "/flow_rate_lpm",
@@ -90,8 +90,8 @@
         {
             "name": "/image_raw/compressed",
             "type": "sensor_msgs/msg/CompressedImage",
-            "handler_module": "image_handler",
-            "handler_class": "ImageHandler"
+            "handler_module": "compressed_image_handler",
+            "handler_class": "CompressedImageHandler"
         },
         {
             "name": "/imu/acceleration",
@@ -228,8 +228,8 @@
         {
             "name": "/thermal_image/compressed",
             "type": "sensor_msgs/msg/CompressedImage",
-            "handler_module": "image_handler",
-            "handler_class": "ImageHandler"
+            "handler_module": "compressed_image_handler",
+            "handler_class": "CompressedImageHandler"
         },
         {
             "name": "/velodyne_points",

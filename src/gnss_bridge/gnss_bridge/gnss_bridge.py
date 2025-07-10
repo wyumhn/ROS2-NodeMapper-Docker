@@ -199,7 +199,7 @@ class GNSSBridge(Node):
 
         # 処理に失敗した場合は何もしない
         if payload is None:
-            self.get_logger().error(f"トピックの辞書変換に失敗したので、トピック送信を中断します ({topic_name}): {e}")
+            self.get_logger().error(f"トピックの辞書変換に失敗したので、トピック送信を中断します ({topic_name})")
             return
 
         # 2. トピック名をペイロードに追加
