@@ -5,6 +5,17 @@
         "/parameter_events"
     ],
     "ignore_rawdata_list": [
+        "/image_color/compressed",
+        "/image_raw/compressed",
+        "/thermal_image/compressed",
+        "/mic1/audio/compressed",
+        "/mic2/audio/compressed",
+        "/mic3/audio/compressed",
+        "/mic4/audio/compressed",
+        "/mic5/audio/compressed",
+        "/mic6/audio/compressed",
+        "/mic7/audio/compressed",
+        "/mic8/audio/compressed",
         "/mic1/audio",
         "/mic2/audio",
         "/mic3/audio",
@@ -12,7 +23,8 @@
         "/mic5/audio",
         "/mic6/audio",
         "/mic7/audio",
-        "/mic8/audio"
+        "/mic8/audio",
+        "/velodyne_points"
     ],
     "topics": [
         {
@@ -191,6 +203,54 @@
         },
         {
             "name": "/mic8/audio",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic1/audio/compressed",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic2/audio/compressed",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic3/audio/compressed",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic4/audio/compressed",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic5/audio/compressed",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic6/audio/compressed",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic7/audio/compressed",
+            "type": "std_msgs/msg/Float32MultiArray",
+            "handler_module": "mic_handler",
+            "handler_class": "MicHandler"
+        },
+        {
+            "name": "/mic8/audio/compressed",
             "type": "std_msgs/msg/Float32MultiArray",
             "handler_module": "mic_handler",
             "handler_class": "MicHandler"
